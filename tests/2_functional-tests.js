@@ -49,7 +49,7 @@ suite('Functional Tests', function () {
         });
     });
     test('1 stock with like again (ensure likes arent double counted)', function (done) {
-      chai.requset(server)
+      chai.request(server)
         .get('/api/stock-prices')
         .query({ stock: 'uber', like: true })
         .end(function (err, res) {
@@ -63,9 +63,34 @@ suite('Functional Tests', function () {
         });
     });
     test('2 stocks', function (done) {
+      chai.request(server)
+        .get('/api/stock-prices')
+        .query({ stock1: 'goog', stock2: 'msft' })
+        .end(function (err, res) {
+          assert.equal(res.status, 200);
+          assert.isArray(res.body.stockData);
+          assert.equal(res.body.stockData.length, 2);
+          assert.isObject(res.body.stockData[0]);
+          assert.property(res.body.stockData[0], 'rel_likes');
+          assert.property(res.body.stockData[0], 'stock');
+          assert.property(res.body.stockData[0], 'price');
+          done();
+        });
     });
     test('2 stocks with like', function (done) {
+      chai.request(server)
+        .get('/api/stock-prices')
+        .query({ stock1: 'goog', stock2: 'msft', like: true })
+        .end(function (err, res) {
+          assert.equal(res.status, 200);
+          assert.isArray(res.body.stockData);
+          assert.equal(res.body.stockData.length, 2);
+          assert.isObject(res.body.stockData[0]);
+          assert.property(res.body.stockData[0], 'rel_likes');
+          assert.property(res.body.stockData[0], 'stock');
+          assert.property(res.body.stockData[0], 'price');
+          done();
+        });
     });
   });
-
 });

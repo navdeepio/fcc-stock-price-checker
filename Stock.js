@@ -6,10 +6,7 @@ const stockSchema = new mongoose.Schema({
     required: true,
     unique: true,
   },
-  likes: [{
-    type: String,
-    unique: true,
-  }],
+  likes: [String],
 });
 
 module.exports = mongoose.model('Stock', stockSchema);

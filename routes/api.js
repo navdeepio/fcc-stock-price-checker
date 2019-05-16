@@ -28,7 +28,9 @@ const params = {
 module.exports = (app) => {
   app.route('/api/stock-prices')
     .get(async (req, res, next) => {
-      const { stock, like } = req.query;
+      const {
+        stock, stock1, stock2, like,
+      } = req.query;
       if (stock) {
         try {
           const result = await $.get(apiUrl, { symbol: stock, ...params });
@@ -36,8 +38,51 @@ module.exports = (app) => {
             const symbol = result.data['01. symbol'];
             const price = result.data['05. price'];
             const { ip } = req;
-            // hello world
-
+            const stockFull = await Stock.findOne({ symbol });
+            if (like && stockFull.likes.indexOf(ip) === -1) {
+              stockFull.likes.push(ip);
+              await stockFull.save();
+            }
+            const likes = stockFull.likes.length;
+            res.json({ stockData: { symbol, likes, price } });
+          } else {
+            next(new Error('Api error'));
+          }
+        } catch (e) {
+          next(e);
+        }
+      } else if (stock1 && stock2) {
+        try {
+          const stockOne = await $.get(apiUrl, { symbol: stock1, ...params });
+          const stockTwo = await $.get(apiUrl, { symbol: stock2, ...params });
+          if (stockOne.status === 200 && stockTwo.status === 200) {
+            const { ip } = req;
+            const stockOneFromDb = await Stock.findOne({ symbol: stock1 });
+            const stockTwoFromDb = await Stock.findOne({ symbol: stock2 });
+            if (like && stockOneFromDb.likes.indexOf(ip) === -1) {
+              stockOneFromDb.likes.push(ip);
+              await stockOneFromDb.save();
+            }
+            if (like && stockTwoFromDb.likes.indexOf(ip) === -1) {
+              stockTwoFromDb.likes.push(ip);
+              await stockTwoFromDb.save();
+            }
+            const stockOneLikes = stockOneFromDb.likes.length;
+            const stockTwoLikes = stockTwoFromDb.likes.length;
+            const stockOnePrice = stockOne['05. price'];
+            const stockTwoPrice = stockTwo['05. price'];
+            res.json([
+              {
+                stock: stock1,
+                price: stockOnePrice,
+                rel_likes: stockOneLikes - stockTwoLikes,
+              },
+              {
+                stock: stock2,
+                price: stockTwoPrice,
+                rel_likes: stockTwoLikes - stockOneLikes,
+              },
+            ]);
           } else {
             next(new Error('Api error'));
           }
@@ -47,8 +92,5 @@ module.exports = (app) => {
       } else {
         res.status(400).json({ message: 'invalid request' });
       }
-
-      
     });
-    
 };

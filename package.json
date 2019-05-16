@@ -15,7 +15,6 @@
 		"express": "^4.16.4",
 		"helmet": "^3.18.0",
 		"mongoose": "^5.5.7",
-		"mongoose-create-unique": "^0.4.4",
 		"zombie": "^5.0.8"
 	},
 	"engines": {

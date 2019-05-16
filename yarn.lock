@@ -1599,11 +1599,6 @@ mongodb@3.2.3:
     mongodb-core "^3.2.3"
     safe-buffer "^5.1.2"
 
-mongoose-create-unique@^0.4.4:
-  version "0.4.4"
-  resolved "https://registry.yarnpkg.com/mongoose-create-unique/-/mongoose-create-unique-0.4.4.tgz#952135fce7bdd16091bb5d5c4a8d6be43481fb29"
-  integrity sha1-lSE1/Oe90WCRu11cSo1r5DSB+yk=
-
 mongoose-legacy-pluralize@1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/mongoose-legacy-pluralize/-/mongoose-legacy-pluralize-1.0.2.tgz#3ba9f91fa507b5186d399fb40854bff18fb563e4"
